@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35707.178 d17.12
+VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverflowingPalette.AppHost", "OverflowingPalette.AppHost\OverflowingPalette.AppHost.csproj", "{B1CC0B19-0F86-4C6A-95D6-62A424078A2F}"
 EndProject
