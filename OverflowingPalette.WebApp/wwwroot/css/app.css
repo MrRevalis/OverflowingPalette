@@ -36,3 +36,9 @@ h1:focus {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+.game-palette {
+    width: 100%;
+    aspect-ratio: 1/1;
+    margin: 0.1em;
+}

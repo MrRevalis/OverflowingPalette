@@ -1,0 +1,57 @@
+﻿@page "/overflowing-palette"
+
+<h3>OverflowingPalette</h3>
+
+<div class="container bg-dark">
+    <div class="row">
+        <div class="col-10">
+            @for (int i = 0; i < Height; i++)
+            {
+                <div class="row">
+                    @for (int j = 0; j < Width; j++)
+                    {
+                        <div class="col border border-primary rounded shadow-sm game-palette">
+                            <span>@i - @j</span>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+        <div class="col-2">
+            @foreach (var color in Colors)
+            {
+                <div class="row">
+                    <div class="col-8">
+                        <button class="btn rounded-circle p-5 m-2 border border-4 @IsColorSelected(color)" @onclick="() => ChangeSelectedColor(color)" style="background-color: @color;" />
+                    </div>
+                    <div class="col-4 p-0 align-self-center">
+                        @if (string.Equals(SelectedColor, color))
+                        {
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="white" class="bi bi-triangle-fill" viewBox="0 0 16 16" transform="rotate(270)">
+                                <path fill-rule="evenodd" d="M7.022 1.566a1.13 1.13 0 0 1 1.96 0l6.857 11.667c.457.778-.092 1.767-.98 1.767H1.144c-.889 0-1.437-.99-.98-1.767z" />
+                            </svg>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private const int Width = 10;
+    private const int Height = 8;
+
+    private string[] Colors = ["#62b4cf", "#D22B2B", "#FFC300", "#AFE1AF"];
+    private string? SelectedColor { get; set; }
+
+    private void ChangeSelectedColor(string color)
+    {
+        SelectedColor = color;
+    }
+
+    private string IsColorSelected(string color)
+    {
+        return string.Equals(SelectedColor, color) ? "border-white" : "border-dark";
+    }
+}
