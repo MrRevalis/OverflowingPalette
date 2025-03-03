@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <Sdk Name="Aspire.AppHost.Sdk" Version="9.0.0" />
 
@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\OverflowingPalette.API\OverflowingPalette.API.csproj" />
     <ProjectReference Include="..\OverflowingPalette.Shared\OverflowingPalette.Shared.csproj" IsAspireProjectResource="false" />
     <ProjectReference Include="..\OverflowingPalette.WebApp\OverflowingPalette.WebApp.csproj" />
   </ItemGroup>

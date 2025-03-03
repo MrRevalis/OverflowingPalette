@@ -10,6 +10,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverflowingPalette.WebApp",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverflowingPalette.Shared", "OverflowingPalette.Shared\OverflowingPalette.Shared.csproj", "{0DCB126F-B56A-4A22-A083-B8DCA7A89EDA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverflowingPalette.API", "OverflowingPalette.API\OverflowingPalette.API.csproj", "{47A596FB-C4D9-4C8F-B63E-AAC88F87F2C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverflowingPalette.Aplication", "OverflowingPalette.Aplication\OverflowingPalette.Aplication.csproj", "{1F1EF1C1-176C-4AA1-A7FB-222361E03A22}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +36,14 @@ Global
 		{0DCB126F-B56A-4A22-A083-B8DCA7A89EDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DCB126F-B56A-4A22-A083-B8DCA7A89EDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DCB126F-B56A-4A22-A083-B8DCA7A89EDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47A596FB-C4D9-4C8F-B63E-AAC88F87F2C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47A596FB-C4D9-4C8F-B63E-AAC88F87F2C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47A596FB-C4D9-4C8F-B63E-AAC88F87F2C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47A596FB-C4D9-4C8F-B63E-AAC88F87F2C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F1EF1C1-176C-4AA1-A7FB-222361E03A22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F1EF1C1-176C-4AA1-A7FB-222361E03A22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F1EF1C1-176C-4AA1-A7FB-222361E03A22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F1EF1C1-176C-4AA1-A7FB-222361E03A22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

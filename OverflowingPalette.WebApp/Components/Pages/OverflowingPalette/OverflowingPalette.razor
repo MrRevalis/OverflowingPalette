@@ -1,5 +1,9 @@
 ﻿@page "/overflowing-palette"
 
+@using global::OverflowingPalette.WebApp.Services
+
+@inject GameService GameService
+
 <h3>OverflowingPalette</h3>
 
 <div class="container bg-dark">
@@ -22,7 +26,7 @@
             {
                 <div class="row">
                     <div class="col-8">
-                        <button class="btn rounded-circle p-5 m-2 border border-4 @IsColorSelected(color)" @onclick="() => ChangeSelectedColor(color)" style="background-color: @color;" />
+                        <button class="btn rounded-circle p-5 m-2 border border-4 @IsColorSelected(color)" @onclick="() => ChangeSelectedColor(color)" style="background-color: @color" />
                     </div>
                     <div class="col-4 p-0 align-self-center">
                         @if (string.Equals(SelectedColor, color))
@@ -42,8 +46,13 @@
     private const int Width = 10;
     private const int Height = 8;
 
-    private string[] Colors = ["#62b4cf", "#D22B2B", "#FFC300", "#AFE1AF"];
+    private IEnumerable<string>? Colors = Array.Empty<string>();
     private string? SelectedColor { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Colors = await GameService.GetColorsAsync();
+    }
 
     private void ChangeSelectedColor(string color)
     {

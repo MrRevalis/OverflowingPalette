@@ -7,8 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.4.1" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OverflowingPalette.Aplication\OverflowingPalette.Aplication.csproj" />
     <ProjectReference Include="..\OverflowingPalette.ServiceDefaults\OverflowingPalette.ServiceDefaults.csproj" />
-    <ProjectReference Include="..\OverflowingPalette.Shared\OverflowingPalette.Shared.csproj" />
   </ItemGroup>
 
 </Project>

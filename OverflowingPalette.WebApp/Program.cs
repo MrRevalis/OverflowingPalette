@@ -1,4 +1,5 @@
 using OverflowingPalette.WebApp.Components;
+using OverflowingPalette.WebApp.Extensions;
 
 namespace OverflowingPalette.WebApp;
 
@@ -8,6 +9,8 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
         builder.AddServiceDefaults();
+
+        builder.AddApplicationServices();
 
         // Add services to the container.
         builder.Services.AddRazorComponents()
