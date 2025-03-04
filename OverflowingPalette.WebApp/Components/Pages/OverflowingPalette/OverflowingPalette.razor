@@ -1,6 +1,8 @@
 ﻿@page "/overflowing-palette"
 
+@using global::OverflowingPalette.Shared.Models
 @using global::OverflowingPalette.WebApp.Services
+@using global::OverflowingPalette.WebApp.Components.Pages.OverflowingPalette.Components
 
 @inject GameService GameService
 
@@ -14,15 +16,16 @@
                 <div class="row">
                     @for (int j = 0; j < Width; j++)
                     {
-                        <div class="col border border-primary rounded shadow-sm game-palette">
-                            <span>@i - @j</span>
-                        </div>
+                        <AnimatedSquareComponent PositionX="@i"
+                                                 PositionY="@j"
+                                                 Color=""
+                                                 SelectedColor="@SelectedColor"></AnimatedSquareComponent>
                     }
                 </div>
             }
         </div>
         <div class="col-2">
-            @foreach (var color in Colors)
+            @foreach (var color in Colors!)
             {
                 <div class="row">
                     <div class="col-8">
@@ -47,11 +50,18 @@
     private const int Height = 8;
 
     private IEnumerable<string>? Colors = Array.Empty<string>();
+    private IEnumerable<AnimatedSquare> AnimatedSquares = Array.Empty<AnimatedSquare>();
     private string? SelectedColor { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        Colors = await GameService.GetColorsAsync();
+        if (firstRender)
+        {
+            Colors = await GameService.GetColorsAsync();
+            AnimatedSquares = GameService.GetAnimatedSquares();
+
+            StateHasChanged();
+        }
     }
 
     private void ChangeSelectedColor(string color)

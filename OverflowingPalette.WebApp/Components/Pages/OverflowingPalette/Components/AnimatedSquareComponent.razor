@@ -1,0 +1,29 @@
+﻿
+<div class="col border border-primary rounded shadow-sm game-palette" style="background-color: @Color" @onclick="() => ChangeSquareColor()">
+    <span>@PositionX - @PositionY</span>
+</div>
+
+
+@code {
+    [Parameter]
+    public required string Color { get; set; }
+
+    [Parameter]
+    public required int PositionX { get; set; }
+
+    [Parameter]
+    public required int PositionY { get; set; }
+
+    [Parameter]
+    public string? SelectedColor { get; set; }
+
+    public void ChangeSquareColor()
+    {
+        if (string.IsNullOrEmpty(SelectedColor))
+        {
+            return;
+        }
+
+        Color = SelectedColor;
+    }
+}
