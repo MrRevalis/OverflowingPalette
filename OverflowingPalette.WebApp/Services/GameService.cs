@@ -14,6 +14,14 @@ namespace OverflowingPalette.WebApp.Services
 
         public IEnumerable<AnimatedSquare> GetAnimatedSquares()
         {
+            var list = new[] {
+                "#62b4cf",
+                    "#D22B2B",
+                    "#FFC300",
+                    "#AFE1AF" };
+
+            var rnd = new Random();
+
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 10; j++)
@@ -22,7 +30,7 @@ namespace OverflowingPalette.WebApp.Services
                     {
                         PositionX = i,
                         PositionY = j,
-                        Color = string.Empty,
+                        Color = list[rnd.Next(0, 4)],
                     };
                 }
             }

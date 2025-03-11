@@ -1,29 +1,59 @@
-﻿
-<div class="col border border-primary rounded shadow-sm game-palette" style="background-color: @Color" @onclick="() => ChangeSquareColor()">
-    <span>@PositionX - @PositionY</span>
+﻿@using global::OverflowingPalette.Shared.Models
+
+<div class="col border border-primary rounded shadow-sm game-palette @AnimationClass" style="background-color: @Square.Color; --newColor: @Square.Color; --previousColor: @PreviousColor;" @onclick="(args) => ChangeSquareColorAsync(args)">
+    <span>@Square.PositionX - @Square.PositionY</span>
 </div>
 
 
 @code {
     [Parameter]
-    public required string Color { get; set; }
-
-    [Parameter]
-    public required int PositionX { get; set; }
-
-    [Parameter]
-    public required int PositionY { get; set; }
+    public required AnimatedSquare Square { get; set; }
 
     [Parameter]
     public string? SelectedColor { get; set; }
 
-    public void ChangeSquareColor()
+    private string? AnimationClass { get; set; }
+    private string? PreviousColor { get; set; }
+
+    public async Task ChangeSquareColorAsync(MouseEventArgs args)
     {
         if (string.IsNullOrEmpty(SelectedColor))
         {
             return;
         }
 
-        Color = SelectedColor;
+        // Square.Color = GetChangeColorAnimationClass(args.OffsetX, args.OffsetY, SelectedColor, Square.Color);
+
+        // await Task.Delay(200);
+        PreviousColor = Square.Color;
+        Square.Color = SelectedColor;
+        AnimationClass = GetAnimationClass(args.OffsetX, args.OffsetY);
+
+        await Task.Delay(350);
+
+        AnimationClass = string.Empty;
+    }
+
+    private string GetChangeColorAnimationClass(double offsetX, double offsetY, string newColor, string currentColor)
+    {
+        return (offsetX, offsetY) switch
+        {
+            ( <= 50, <= 50) => $"linear-gradient(to bottom right, {newColor}, {currentColor})",
+            ( < 50, > 50) => $"linear-gradient(to top right, {newColor}, {currentColor})",
+            ( >= 50, <= 50) => $"linear-gradient(to bottom left, {newColor}, {currentColor})",
+            ( > 50, > 50) => $"linear-gradient(to top left, {newColor}, {currentColor})",
+            _ => newColor
+        };
+    }
+
+    private string GetAnimationClass(double offsetX, double offsetY){
+        return (offsetX, offsetY) switch
+        {
+            ( <= 50, <= 50) => "animate-top-left",
+            ( > 50, <= 50) => "animate-top-right",
+            ( <= 50, > 50) => "animate-bottom-left",
+            ( > 50, > 50) => "animate-bottom-right",
+            _ => string.Empty
+        };
     }
 }

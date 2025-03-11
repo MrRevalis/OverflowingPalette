@@ -42,3 +42,59 @@ h1:focus {
     aspect-ratio: 1/1;
     margin: 0.1em;
 }
+
+@keyframes gradient-bottom-right {
+    0% {
+        background: linear-gradient(to bottom right, var(--previousColor), var(--newColor));
+    }
+
+    100% {
+        background: var(--newColor);
+    }
+}
+
+@keyframes gradient-bottom-left {
+    0% {
+        background: linear-gradient(to bottom left, var(--previousColor), var(--newColor));
+    }
+
+    100% {
+        background: var(--newColor);
+    }
+}
+
+@keyframes gradient-top-right {
+    0% {
+        background: linear-gradient(to top right, var(--previousColor), var(--newColor));
+    }
+
+    100% {
+        background: var(--newColor);
+    }
+}
+
+@keyframes gradient-top-left {
+    0% {
+        background: linear-gradient(to top left, var(--previousColor), var(--newColor));
+    }
+
+    100% {
+        background: var(--newColor);
+    }
+}
+
+.animate-bottom-right {
+    animation: gradient-bottom-right 0.35s;
+}
+
+.animate-bottom-left {
+    animation: gradient-bottom-left 0.35s;
+}
+
+.animate-top-right {
+    animation: gradient-top-right 0.35s;
+}
+
+.animate-top-left {
+    animation: gradient-top-left 0.35s;
+}

@@ -14,12 +14,10 @@
             @for (int i = 0; i < Height; i++)
             {
                 <div class="row">
-                    @for (int j = 0; j < Width; j++)
+                    @foreach (var square in AnimatedSquares.Skip(i * Width).Take(Width))
                     {
-                        <AnimatedSquareComponent PositionX="@i"
-                                                 PositionY="@j"
-                                                 Color=""
-                                                 SelectedColor="@SelectedColor"></AnimatedSquareComponent>
+                        <AnimatedSquareComponent Square="@square"
+                                                 SelectedColor="@SelectedColor" />
                     }
                 </div>
             }
@@ -50,7 +48,7 @@
     private const int Height = 8;
 
     private IEnumerable<string>? Colors = Array.Empty<string>();
-    private IEnumerable<AnimatedSquare> AnimatedSquares = Array.Empty<AnimatedSquare>();
+    private List<AnimatedSquare> AnimatedSquares = new List<AnimatedSquare>();
     private string? SelectedColor { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -58,7 +56,7 @@
         if (firstRender)
         {
             Colors = await GameService.GetColorsAsync();
-            AnimatedSquares = GameService.GetAnimatedSquares();
+            AnimatedSquares = GameService.GetAnimatedSquares().ToList();
 
             StateHasChanged();
         }
