@@ -3,10 +3,11 @@
 @using global::OverflowingPalette.Shared.Models
 @using global::OverflowingPalette.WebApp.Services
 @using global::OverflowingPalette.WebApp.Components.Pages.OverflowingPalette.Components
+@using static global::OverflowingPalette.Shared.Constants.Constants
 
 @inject GameService GameService
 
-<h3>OverflowingPalette</h3>
+<PageTitle>Overflowing Palette</PageTitle>
 
 <div class="container bg-dark">
     <div class="row">
@@ -17,7 +18,8 @@
                     @foreach (var square in AnimatedSquares.Skip(i * Width).Take(Width))
                     {
                         <AnimatedSquareComponent Square="@square"
-                                                 SelectedColor="@SelectedColor" />
+                                                 SelectedColor="@SelectedColor"
+                                                 ChangeNeighborsColor="@ChangeNeighborsColor" />
                     }
                 </div>
             }
@@ -46,10 +48,12 @@
 @code {
     private const int Width = 10;
     private const int Height = 8;
+    private readonly HashSet<(int, int)> Offsets = [(0, 1), (1, 0), (0, -1), (-1, 0)];
 
     private IEnumerable<string>? Colors = Array.Empty<string>();
     private List<AnimatedSquare> AnimatedSquares = new List<AnimatedSquare>();
     private string? SelectedColor { get; set; }
+    private bool IsProceeding = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -57,18 +61,120 @@
         {
             Colors = await GameService.GetColorsAsync();
             AnimatedSquares = GameService.GetAnimatedSquares().ToList();
+            SelectedColor = Colors.FirstOrDefault() ?? string.Empty;
 
             StateHasChanged();
         }
     }
 
+    private async Task ChangeNeighborsColor(AnimatedSquare clickedSquare)
+    {
+        if (IsProceeding)
+        {
+            return;
+        }
+
+        IsProceeding = true;
+
+        Dictionary<int, List<(AnimatedSquare square, string animationClass)>> animationPlan = new();
+        Queue<(AnimatedSquare square, int depth, (int offsetX, int offsetY) direction)> queue = new();
+        HashSet<(int, int)> visited = new();
+
+        queue.Enqueue((clickedSquare, 0, (0, 0)));
+        visited.Add((clickedSquare.PositionX, clickedSquare.PositionY));
+
+        while (queue.Any())
+        {
+            var (currentSquare, depth, direction) = queue.Dequeue();
+
+            if (!animationPlan.ContainsKey(depth))
+            {
+                animationPlan[depth] = new();
+            }
+
+            animationPlan[depth].Add((currentSquare, GetAnimationClassFromStart(clickedSquare, currentSquare)));
+
+            foreach (var (offsetX, offsetY) in Offsets)
+            {
+                var newRow = currentSquare.PositionX + offsetX;
+                var newCol = currentSquare.PositionY + offsetY;
+
+                if (newRow >= 0 && newRow < Height && newCol >= 0 && newCol < Width &&
+                    !visited.Contains((newRow, newCol)))
+                {
+                    var neighbor = GetSquare(newRow, newCol);
+
+                    if (neighbor is not null
+                        && neighbor.Color == clickedSquare.Color)
+                    {
+                        queue.Enqueue((neighbor, depth + 1, (offsetX, offsetY)));
+                        visited.Add((newRow, newCol));
+                    }
+                }
+            }
+        }
+
+        foreach (var depthLevel in animationPlan.Keys.OrderBy(key => key))
+        {
+            foreach (var (square, animationClass) in animationPlan[depthLevel])
+            {
+                square.PreviousColor = square.Color;
+                square.Color = SelectedColor;
+                square.AnimationClass = animationClass;
+            }
+
+            StateHasChanged();
+            await Task.Delay(100);
+        }
+
+        IsProceeding = false;
+    }
+
+    private AnimatedSquare? GetSquare(int row, int col)
+    {
+        int index = row * Width + col;
+        return index >= 0 && index < AnimatedSquares.Count ? AnimatedSquares[index] : null;
+    }
+
     private void ChangeSelectedColor(string color)
     {
+        if (IsProceeding)
+        {
+            return;
+        }
+
         SelectedColor = color;
     }
 
     private string IsColorSelected(string color)
     {
-        return string.Equals(SelectedColor, color) ? "border-white" : "border-dark";
+        return string.Equals(SelectedColor, color) ? CssClasses.BorderWhite : CssClasses.BorderDark;
+    }
+
+
+    private string GetAnimationClassFromStart(AnimatedSquare startSquare, AnimatedSquare currentSquare)
+    {
+        if (startSquare == currentSquare) 
+        {
+            return string.Empty;
+        }
+
+        int totalDifferenceX = currentSquare.PositionX - startSquare.PositionX;
+        int totalDifferenceY = currentSquare.PositionY - startSquare.PositionY;
+
+        return (totalDifferenceX, totalDifferenceY) switch
+        {
+            var (differenceX, differenceY) when Math.Abs(differenceX) > Math.Abs(differenceY) =>
+                differenceX > 0 ? AnimationStyles.FromTop : AnimationStyles.FromBottom,
+
+            var (differenceX, differenceY) when Math.Abs(differenceY) > Math.Abs(differenceX) =>
+                differenceY > 0 ? AnimationStyles.FromLeft : AnimationStyles.FromRight,
+
+            ( > 0, > 0) => AnimationStyles.FromTopLeft,
+            ( < 0, > 0) => AnimationStyles.FromBottomLeft,
+            ( > 0, < 0) => AnimationStyles.FromTopRight,
+            ( < 0, < 0) => AnimationStyles.FromBottomRight,
+            _ => AnimationStyles.None
+        };
     }
 }

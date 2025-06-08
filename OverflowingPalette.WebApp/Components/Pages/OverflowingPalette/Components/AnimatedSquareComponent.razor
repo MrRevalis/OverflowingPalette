@@ -1,9 +1,11 @@
 ﻿@using global::OverflowingPalette.Shared.Models
+@using global::OverflowingPalette.WebApp.Handlers
 
-<div class="col border border-primary rounded shadow-sm game-palette @AnimationClass" style="background-color: @Square.Color; --newColor: @Square.Color; --previousColor: @PreviousColor;" @onclick="(args) => ChangeSquareColorAsync(args)">
-    <span>@Square.PositionX - @Square.PositionY</span>
-</div>
-
+<div 
+    class="col border border-primary rounded shadow-sm game-palette @Square.AnimationClass"
+    style="background-color: @Square.Color; --newColor: @Square.Color; --previousColor: @Square.PreviousColor;"
+    @onclick="(args) => ChangeSquareColorAsync(args)"
+    @onanimationend="HandleAnimationEnd" />
 
 @code {
     [Parameter]
@@ -12,48 +14,22 @@
     [Parameter]
     public string? SelectedColor { get; set; }
 
-    private string? AnimationClass { get; set; }
-    private string? PreviousColor { get; set; }
+    [Parameter]
+    public EventCallback<AnimatedSquare> ChangeNeighborsColor { get; set; }
 
     public async Task ChangeSquareColorAsync(MouseEventArgs args)
     {
-        if (string.IsNullOrEmpty(SelectedColor))
+        if (string.IsNullOrEmpty(SelectedColor)
+            || string.Equals(Square.Color, SelectedColor))
         {
             return;
         }
 
-        // Square.Color = GetChangeColorAnimationClass(args.OffsetX, args.OffsetY, SelectedColor, Square.Color);
-
-        // await Task.Delay(200);
-        PreviousColor = Square.Color;
-        Square.Color = SelectedColor;
-        AnimationClass = GetAnimationClass(args.OffsetX, args.OffsetY);
-
-        await Task.Delay(350);
-
-        AnimationClass = string.Empty;
+        await ChangeNeighborsColor.InvokeAsync(Square);
     }
 
-    private string GetChangeColorAnimationClass(double offsetX, double offsetY, string newColor, string currentColor)
+    private void HandleAnimationEnd()
     {
-        return (offsetX, offsetY) switch
-        {
-            ( <= 50, <= 50) => $"linear-gradient(to bottom right, {newColor}, {currentColor})",
-            ( < 50, > 50) => $"linear-gradient(to top right, {newColor}, {currentColor})",
-            ( >= 50, <= 50) => $"linear-gradient(to bottom left, {newColor}, {currentColor})",
-            ( > 50, > 50) => $"linear-gradient(to top left, {newColor}, {currentColor})",
-            _ => newColor
-        };
-    }
-
-    private string GetAnimationClass(double offsetX, double offsetY){
-        return (offsetX, offsetY) switch
-        {
-            ( <= 50, <= 50) => "animate-top-left",
-            ( > 50, <= 50) => "animate-top-right",
-            ( <= 50, > 50) => "animate-bottom-left",
-            ( > 50, > 50) => "animate-bottom-right",
-            _ => string.Empty
-        };
+        Square.AnimationClass = string.Empty;
     }
 }

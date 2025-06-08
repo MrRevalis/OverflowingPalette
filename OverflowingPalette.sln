@@ -12,7 +12,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverflowingPalette.Shared",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverflowingPalette.API", "OverflowingPalette.API\OverflowingPalette.API.csproj", "{47A596FB-C4D9-4C8F-B63E-AAC88F87F2C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverflowingPalette.Aplication", "OverflowingPalette.Aplication\OverflowingPalette.Aplication.csproj", "{1F1EF1C1-176C-4AA1-A7FB-222361E03A22}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverflowingPalette.Application", "OverflowingPalette.Aplication\OverflowingPalette.Application.csproj", "{1F1EF1C1-176C-4AA1-A7FB-222361E03A22}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

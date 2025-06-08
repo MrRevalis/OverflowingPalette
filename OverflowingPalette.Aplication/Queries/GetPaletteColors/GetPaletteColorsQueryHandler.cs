@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace OverflowingPalette.Aplication.Queries.GetPaletteColors
+namespace OverflowingPalette.Application.Queries.GetPaletteColors
 {
     public class GetPaletteColorsQueryHandler : IRequestHandler<GetPaletteColorsQuery, IEnumerable<string>>
     {

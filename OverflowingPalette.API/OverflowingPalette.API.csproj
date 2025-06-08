@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OverflowingPalette.Aplication\OverflowingPalette.Aplication.csproj" />
+    <ProjectReference Include="..\OverflowingPalette.Aplication\OverflowingPalette.Application.csproj" />
     <ProjectReference Include="..\OverflowingPalette.ServiceDefaults\OverflowingPalette.ServiceDefaults.csproj" />
   </ItemGroup>
 

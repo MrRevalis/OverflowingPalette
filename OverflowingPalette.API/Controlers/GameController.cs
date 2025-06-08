@@ -1,8 +1,7 @@
 ﻿using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
-
-using OverflowingPalette.Aplication.Queries.GetPaletteColors;
+using OverflowingPalette.Application.Queries.GetPaletteColors;
 
 namespace OverflowingPalette.API.Controlers
 {

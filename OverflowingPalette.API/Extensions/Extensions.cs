@@ -1,4 +1,4 @@
-﻿using OverflowingPalette.Aplication.Queries.GetPaletteColors;
+﻿using OverflowingPalette.Application.Assembly;
 
 namespace OverflowingPalette.API.Extensions
 {
@@ -6,7 +6,7 @@ namespace OverflowingPalette.API.Extensions
     {
         public static void AddAplicationServices(this IHostApplicationBuilder builder)
         {
-            builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetPaletteColorsQueryHandler).Assembly));
+            builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<IApplication>());
         }
     }
 }
