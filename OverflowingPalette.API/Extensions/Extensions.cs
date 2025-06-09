@@ -14,6 +14,19 @@ namespace OverflowingPalette.API.Extensions
 
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
+            builder.Services.AddOutputCache(options =>
+            {
+                options.AddBasePolicy(builder =>
+                {
+                    builder.Expire(TimeSpan.FromMinutes(10));
+                    builder.Cache();
+                });
+            });
+        }
+
+        public static void AddAplicationServices(this WebApplication app)
+        {
+            app.UseOutputCache();
         }
 
         public static void ApplyMigrations(this WebApplication app)

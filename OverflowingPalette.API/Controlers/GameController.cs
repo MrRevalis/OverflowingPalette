@@ -1,6 +1,8 @@
 ﻿using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
+using OverflowingPalette.Application.Queries.GetAvailableLevels;
 using OverflowingPalette.Application.Queries.GetLevel;
 using OverflowingPalette.Application.Queries.GetPaletteColors;
 
@@ -8,6 +10,7 @@ namespace OverflowingPalette.API.Controlers
 {
     [Route("api/game")]
     [ApiController]
+    [OutputCache]
     public class GameController : Controller
     {
         private readonly IMediator _mediator;
@@ -46,7 +49,7 @@ namespace OverflowingPalette.API.Controlers
         [HttpGet]
         public async Task<IActionResult> GetListOfLevels()
         {
-            var query = new GetLevelsQuery();
+            var query = new GetAvailableLevelsQuery();
 
             var result = await _mediator.Send(query);
 

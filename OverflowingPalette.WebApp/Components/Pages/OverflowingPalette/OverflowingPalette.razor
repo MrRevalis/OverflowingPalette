@@ -1,25 +1,20 @@
-﻿@page "/overflowing-palette"
+﻿@page "/"
+@page "/overflowing-palette"
+@page "/overflowing-palette/{levelNumber:int}"
 
+@using global::OverflowingPalette.WebApp.Components.Pages.Menu
 @using global::OverflowingPalette.Shared.Models
 @using global::OverflowingPalette.WebApp.Components.Pages.OverflowingPalette.Components
-@using global::OverflowingPalette.WebApp.Services
+@using global::OverflowingPalette.WebApp.Services.Interfaces
 @using static global::OverflowingPalette.Shared.Constants.Constants
 
-@inject GameService GameService
+@inject IGameService GameService
 
 <PageTitle>Overflowing Palette</PageTitle>
 
 <main class="row flex-grow-1 p-3 p-md-4">
     <div class="col-12 col-md-2 col-lg-2 mb-4 mb-md-0">
-        <div class="card bg-dark-subtle border-secondary h-100">
-            <div class="card-header text-white fw-bold">
-                Levels
-            </div>
-            <div class="list-group list-group-flush">
-                <NavLink href="/game/1" class="list-group-item list-group-item-action list-group-item-dark">1</NavLink>
-                <NavLink href="/game/2" class="list-group-item list-group-item-action list-group-item-dark">2</NavLink>
-            </div>
-        </div>
+        <MenuComponent/>
     </div>
     <div class="col-12 col-md-8 col-lg-8 d-flex flex-column align-items-center">
         <div class="d-flex justify-content-between align-items-center w-100 mb-3 px-3">
@@ -75,14 +70,15 @@
 </main>
 
 @code {
-    private const int Width = 10;
-    private const int Height = 8;
-    private readonly HashSet<(int, int)> Offsets = [(0, 1), (1, 0), (0, -1), (-1, 0)];
+    [Parameter]
+    public int? LevelNumber { get; set; }
 
+    public List<BlockStateDto> CurrentBlocks = new();
+
+    private readonly HashSet<(int, int)> Offsets = [(0, 1), (1, 0), (0, -1), (-1, 0)];
     private IEnumerable<string>? PaletteColors = Array.Empty<string>();
-    private LevelDetailsDto Level;
-    private List<BlockStateDto> CurrentBlocks = new();
-    private string? SelectedColor { get; set; }
+    private LevelDetailsDto? Level;
+    private string? SelectedColor;
     private bool IsProceeding = false;
     private int RemainingMoves;
 
@@ -90,24 +86,41 @@
     {
         if (firstRender)
         {
-            Level = await GameService.GetGameLevel(1);
-
-            CurrentBlocks = Level.InitialState
-                .Select(b => new BlockStateDto
-                            {
-                                PositionX = b.PositionX,
-                                PositionY = b.PositionY,
-                                Color = b.Color
-                            }
-                )
-                .ToList();
-
-            PaletteColors = Level.Palette.Select(x => x.Color);
-            RemainingMoves = Level.MaxMoves;
-            SelectedColor = PaletteColors.FirstOrDefault() ?? string.Empty;
-
-            StateHasChanged();
+            await InitializeGameState();
         }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        LevelNumber = LevelNumber ?? 1;
+
+        if (LevelNumber == Level?.LevelNumber)
+        {
+            return;
+        }
+
+        await InitializeGameState();
+    }
+
+    private async Task InitializeGameState()
+    {
+        Level = await GameService.GetGameLevel(LevelNumber!.Value);
+
+        CurrentBlocks = Level.InitialState
+            .Select(b => new BlockStateDto
+            {
+                PositionX = b.PositionX,
+                PositionY = b.PositionY,
+                Color = b.Color
+            }
+            )
+            .ToList();
+
+        PaletteColors = Level.Palette.Select(x => x.Color);
+        RemainingMoves = Level.MaxMoves;
+        SelectedColor = PaletteColors.FirstOrDefault() ?? string.Empty;
+
+        StateHasChanged();
     }
 
     private async Task ChangeNeighborsColor(BlockStateDto clickedSquare)
@@ -120,6 +133,29 @@
         IsProceeding = true;
         RemainingMoves--;
 
+        var animationPlan = CreateAnimationPlan(clickedSquare);
+
+        foreach (var depthLevel in animationPlan.Keys.OrderBy(key => key))
+        {
+            foreach (var (square, animationClass) in animationPlan[depthLevel])
+            {
+                square.PreviousColor = square.Color;
+                square.Color = SelectedColor!;
+                square.AnimationClass = animationClass;
+            }
+
+            StateHasChanged();
+            await Task.Delay(100);
+        }
+
+        CheckForWinCondition();
+        CheckRemainingMovesCondition();
+
+        IsProceeding = false;
+    }
+
+    private Dictionary<int, List<(BlockStateDto square, string animationClass)>> CreateAnimationPlan(BlockStateDto clickedSquare)
+    {
         Dictionary<int, List<(BlockStateDto square, string animationClass)>> animationPlan = new();
         Queue<(BlockStateDto square, int depth, (int offsetX, int offsetY) direction)> queue = new();
         HashSet<(int, int)> visited = new();
@@ -143,7 +179,7 @@
                 var newRow = currentSquare.PositionX + offsetX;
                 var newCol = currentSquare.PositionY + offsetY;
 
-                if (newRow >= 0 && newRow < Level.Height && newCol >= 0 && newCol < Level.Width &&
+                if (newRow >= 0 && newRow < Level!.Height && newCol >= 0 && newCol < Level!.Width &&
                     !visited.Contains((newRow, newCol)))
                 {
                     var neighbor = GetSquare(newRow, newCol);
@@ -158,50 +194,18 @@
             }
         }
 
-        foreach (var depthLevel in animationPlan.Keys.OrderBy(key => key))
-        {
-            foreach (var (square, animationClass) in animationPlan[depthLevel])
-            {
-                square.PreviousColor = square.Color;
-                square.Color = SelectedColor;
-                square.AnimationClass = animationClass;
-            }
-
-            StateHasChanged();
-            await Task.Delay(100);
-        }
-
-        CheckForWinCondition();
-        CheckRemainingMovesCondition();
-
-        IsProceeding = false;
+        return animationPlan;
     }
 
     private BlockStateDto? GetSquare(int row, int col)
     {
-        int index = row * Level.Width + col;
+        int index = row * Level!.Width + col;
         return index >= 0 && index < CurrentBlocks.Count ? CurrentBlocks[index] : null;
     }
 
-    private void ChangeSelectedColor(string color)
-    {
-        if (IsProceeding)
-        {
-            return;
-        }
-
-        SelectedColor = color;
-    }
-
-    private string IsColorSelected(string color)
-    {
-        return string.Equals(SelectedColor, color) ? CssClasses.BorderWhite : CssClasses.BorderDark;
-    }
-
-
     private string GetAnimationClassFromStart(BlockStateDto startSquare, BlockStateDto currentSquare)
     {
-        if (startSquare == currentSquare) 
+        if (startSquare == currentSquare)
         {
             return string.Empty;
         }
@@ -225,19 +229,21 @@
         };
     }
 
-    private void RestartLevel()
+    private void ChangeSelectedColor(string color)
     {
-        CurrentBlocks = Level.InitialState
-            .Select(b => new BlockStateDto
-            {
-                PositionX = b.PositionX,
-                PositionY = b.PositionY,
-                Color = b.Color
-            }
-            )
-            .ToList();
-        RemainingMoves = Level.MaxMoves;
+        if (IsProceeding)
+        {
+            return;
+        }
+
+        SelectedColor = color;
     }
+
+    private string IsColorSelected(string color)
+    {
+        return string.Equals(SelectedColor, color) ? CssClasses.BorderWhite : CssClasses.BorderDark;
+    }
+
 
     private string GetColorName()
     {
@@ -248,14 +254,17 @@
 
         return Level?.TargetColor switch
         {
-            Colors.Red => "Red",
+            Colors.Red => ColorsName.Red,
+            Colors.Yellow => ColorsName.Yellow,
+            Colors.Blue => ColorsName.Blue,
+            Colors.Teal => ColorsName.Teal,
             _ => string.Empty
         };
     }
 
     private void CheckForWinCondition()
     {
-        var allBlocksHaveCorrectColor = CurrentBlocks.All(block => block.Color == Level.TargetColor);
+        var allBlocksHaveCorrectColor = CurrentBlocks.All(block => block.Color == Level!.TargetColor);
 
         if (allBlocksHaveCorrectColor)
         {
@@ -269,5 +278,19 @@
         {
             RestartLevel();
         }
+    }
+
+    private void RestartLevel()
+    {
+        CurrentBlocks = Level!.InitialState
+            .Select(b => new BlockStateDto
+            {
+                PositionX = b.PositionX,
+                PositionY = b.PositionY,
+                Color = b.Color
+            })
+            .ToList();
+
+        RemainingMoves = Level.MaxMoves;
     }
 }

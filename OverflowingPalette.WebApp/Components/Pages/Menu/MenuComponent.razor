@@ -1,0 +1,32 @@
+﻿@using global::OverflowingPalette.Shared.Models
+@using global::OverflowingPalette.WebApp.Services.Interfaces
+
+@inject IGameService GameService
+
+<div class="card bg-dark-subtle border-secondary h-100">
+    <div class="card-header text-white fw-bold">
+        Levels
+    </div>
+    <div class="list-group list-group-flush">
+        @foreach (var level in AvailableLevels)
+        {
+            <NavLink href="@($"/overflowing-palette/{level.LevelNumber}")"
+                     class="list-group-item list-group-item-action list-group-item-dark"
+                     Match=@NavLinkMatch.All>@level.Name</NavLink>
+        }
+    </div>
+</div>
+
+@code {
+    private IEnumerable<AvailableLevels> AvailableLevels = Array.Empty<AvailableLevels>();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            AvailableLevels = await GameService.GetAvailableLevels();
+
+            StateHasChanged();
+        }
+    }
+}

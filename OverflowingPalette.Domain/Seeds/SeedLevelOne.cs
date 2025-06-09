@@ -4,7 +4,7 @@ using static OverflowingPalette.Shared.Constants.Constants;
 
 namespace OverflowingPalette.Domain.Seeds
 {
-    public static class SeedsConfiguration
+    public static partial class SeedsConfiguration
     {
         public static void SeedLevelOne(ModelBuilder modelBuilder)
         {

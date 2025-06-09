@@ -32,6 +32,8 @@ namespace OverflowingPalette.Domain.Data
                 .IsUnique();
 
             SeedsConfiguration.SeedLevelOne(modelBuilder);
+            SeedsConfiguration.SeedLevelTwo(modelBuilder);
+            SeedsConfiguration.SeedLevelThree(modelBuilder);
         }
     }
 }

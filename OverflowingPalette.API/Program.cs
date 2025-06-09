@@ -33,7 +33,7 @@ public class Program
         }
 
         app.ApplyMigrations();
-        // app.UseOutputCache();
+        app.AddAplicationServices();
 
         app.MapDefaultEndpoints();
 
