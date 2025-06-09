@@ -12,28 +12,12 @@ namespace OverflowingPalette.WebApp.Services
             return results!;
         }
 
-        public IEnumerable<AnimatedSquare> GetAnimatedSquares()
+        public async Task<LevelDetailsDto> GetGameLevel(int levelNumber)
         {
-            var list = new[] {
-                "#62b4cf",
-                    "#D22B2B",
-                    "#FFC300",
-                    "#AFE1AF" };
+            var uri = $"/api/game/{levelNumber}";
+            var results = await httpClient.GetFromJsonAsync<LevelDetailsDto>(uri);
 
-            var rnd = new Random();
-
-            for (int i = 0; i < 8; i++)
-            {
-                for (int j = 0; j < 10; j++)
-                {
-                    yield return new AnimatedSquare
-                    {
-                        PositionX = i,
-                        PositionY = j,
-                        Color = list[rnd.Next(0, 4)],
-                    };
-                }
-            }
+            return results!;
         }
     }
 }

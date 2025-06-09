@@ -1,18 +1,23 @@
 ﻿using MediatR;
+using OverflowingPalette.Domain.Models;
+using OverflowingPalette.Domain.Repositories.Base;
 
 namespace OverflowingPalette.Application.Queries.GetPaletteColors
 {
     public class GetPaletteColorsQueryHandler : IRequestHandler<GetPaletteColorsQuery, IEnumerable<string>>
     {
-        public Task<IEnumerable<string>> Handle(GetPaletteColorsQuery request, CancellationToken cancellationToken)
+        private readonly IGenericRepository<LevelPaletteColor> _levelPaletteRepository;
+
+        public GetPaletteColorsQueryHandler(IGenericRepository<LevelPaletteColor> levelPaletteRepository)
         {
-            return Task.FromResult<IEnumerable<string>>
-                ([
-                    "#62b4cf",
-                    "#D22B2B",
-                    "#FFC300",
-                    "#AFE1AF"
-                ]);
+            _levelPaletteRepository = levelPaletteRepository;
+        }
+
+        public async Task<IEnumerable<string>> Handle(GetPaletteColorsQuery request, CancellationToken cancellationToken)
+        {
+            var results = await _levelPaletteRepository.GetAllAsync();
+
+            return results.Select(x => x.Color);
         }
     }
 }

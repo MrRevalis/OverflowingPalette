@@ -4,6 +4,40 @@
     margin: 0.1em;
 }
 
+.palette-color-button {
+    width: 5.125rem;
+    aspect-ratio: 1/1;
+    transition: transform 0.2s ease-in-out;
+}
+
+.palette-color-button:hover {
+    transform: scale(1.1);
+}
+
+.palette-color-button.border-white { /* Klasa z Twojej logiki IsColorSelected */
+    transform: scale(1.15);
+    border-width: 3px !important;
+}
+
+.btn-reset {
+    background: #333;
+    color: #ccc;
+    border-radius: 50%;
+    width: 4.125rem;
+    aspect-ratio: 1/1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #555;
+    transition: all 0.2s ease;
+}
+
+.btn-reset:hover {
+    background: #444;
+    color: white;
+    transform: rotate(-90deg);
+}
+
 .animate-from-top {
     animation: from-top 0.35s;
 }

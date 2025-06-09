@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverflowingPalette.API", "O
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverflowingPalette.Application", "OverflowingPalette.Aplication\OverflowingPalette.Application.csproj", "{1F1EF1C1-176C-4AA1-A7FB-222361E03A22}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverflowingPalette.Domain", "OverflowingPalette.Domain\OverflowingPalette.Domain.csproj", "{599B846F-D256-49B7-B3EA-73BDAF57DA00}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,8 +46,15 @@ Global
 		{1F1EF1C1-176C-4AA1-A7FB-222361E03A22}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F1EF1C1-176C-4AA1-A7FB-222361E03A22}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F1EF1C1-176C-4AA1-A7FB-222361E03A22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{599B846F-D256-49B7-B3EA-73BDAF57DA00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{599B846F-D256-49B7-B3EA-73BDAF57DA00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{599B846F-D256-49B7-B3EA-73BDAF57DA00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{599B846F-D256-49B7-B3EA-73BDAF57DA00}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {67A15095-C33B-4FC8-A525-D17EE981C3C8}
 	EndGlobalSection
 EndGlobal

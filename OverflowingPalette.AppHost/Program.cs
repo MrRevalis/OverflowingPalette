@@ -1,10 +1,16 @@
-using OverflowingPalette.Shared.Constants;
+using static OverflowingPalette.Shared.Constants.Constants;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
-var webApi = builder.AddProject<Projects.OverflowingPalette_API>(Constants.Configuration.WebApi);
+var database = builder.AddSqlServer("sql")
+    //.WithDataVolume()
+    .AddDatabase("overflowingPalette");
 
-builder.AddProject<Projects.OverflowingPalette_WebApp>(Constants.Configuration.WebApp)
+var webApi = builder.AddProject<Projects.OverflowingPalette_API>(Configuration.WebApi)
+    .WithReference(database)
+    .WaitFor(database);
+
+builder.AddProject<Projects.OverflowingPalette_WebApp>(Configuration.WebApp)
     .WaitFor(webApi)
     .WithReference(webApi);
 

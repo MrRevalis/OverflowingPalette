@@ -1,4 +1,5 @@
 using OverflowingPalette.API.Extensions;
+using OverflowingPalette.Domain.Data;
 using OverflowingPalette.ServiceDefaults;
 
 namespace OverflowingPalette.API;
@@ -8,9 +9,9 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        builder.AddServiceDefaults();
 
         builder.AddAplicationServices();
+        builder.AddServiceDefaults();
 
         // Add services to the container.
         builder.Services.AddAuthorization();
@@ -21,6 +22,18 @@ public class Program
         builder.Services.AddOpenApi();
 
         var app = builder.Build();
+
+        if (app.Environment.IsDevelopment())
+        {
+            using (var scope = app.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<OverflowingPaletteDbContext>();
+                context.Database.EnsureCreated();
+            }
+        }
+
+        app.ApplyMigrations();
+        // app.UseOutputCache();
 
         app.MapDefaultEndpoints();
 

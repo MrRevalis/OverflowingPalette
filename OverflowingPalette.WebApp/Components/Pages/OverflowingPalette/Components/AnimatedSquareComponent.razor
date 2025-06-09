@@ -9,13 +9,13 @@
 
 @code {
     [Parameter]
-    public required AnimatedSquare Square { get; set; }
+    public required BlockStateDto Square { get; set; }
 
     [Parameter]
     public string? SelectedColor { get; set; }
 
     [Parameter]
-    public EventCallback<AnimatedSquare> ChangeNeighborsColor { get; set; }
+    public EventCallback<BlockStateDto> ChangeNeighborsColor { get; set; }
 
     public async Task ChangeSquareColorAsync(MouseEventArgs args)
     {

@@ -2,7 +2,7 @@
 
 namespace OverflowingPalette.Application.Queries.GetPaletteColors
 {
-    public class GetPaletteColorsQuery : IRequest<IEnumerable<string>>
+    public record GetPaletteColorsQuery : IRequest<IEnumerable<string>>
     {
     }
 }
